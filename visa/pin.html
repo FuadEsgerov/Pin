@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="az">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yeni PIN təyin et</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Center the card */
+        body {
+            display: flex;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 400px;
+            width: 100%;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .container p {
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: #2D3940;
+            text-align: left;
+        }
+
+        .input-field {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .input-field input {
+            width: 100%;
+            padding: 12px 40px 12px 15px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        .input-field .eye-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+
+        .btn {
+            width: 95%;
+            padding: 12px;
+            font-size: 16px;
+            background-color: #00bcd4;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+        }
+
+        .btn:disabled {
+            background-color: #ddd;
+            cursor: not-allowed;
+        }
+
+        .message {
+            margin-top: 10px;
+            font-size: 14px;
+            color: red;
+        }
+
+        /* Custom icons */
+        .eye-icon-advanced,
+        .eye-slash-icon-advanced {
+            display: inline-block;
+            background-size: cover;
+            width: 24px;
+            height: 24px;
+        }
+
+        .eye-icon-advanced {
+            background: url('./assets/icons/eye.svg') no-repeat;
+
+        }
+
+        .eye-slash-icon-advanced {
+            background: url('./assets/icons/eye-slash.svg') no-repeat;
+        }
+
+        .fee p {
+            text-align: left;
+            color: #797E80;
+        }
+
+        .fee span {
+            color: #2D3940;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <p>PIn kodu deyismek ucun yeni kodu 2 defe daxil edin</p>
+        <div class="input-field">
+            <input type="password" id="pin1" placeholder="Yeni PIN-i daxil et">
+            <span class="eye-icon" onclick="togglePassword('pin1')"><i class="eye-slash-icon-advanced"></i></span>
+        </div>
+        <div class="input-field">
+            <input type="password" id="pin2" placeholder="Yeni PIN-i təkrar daxil et">
+            <span class="eye-icon" onclick="togglePassword('pin2')"><i class="eye-slash-icon-advanced"></i></span>
+        </div>
+        <div class="fee">
+            <p>Xidmet haqqi <span>pulsuzdur</span></p>
+        </div>
+        <button class="btn" id="confirmButton" onclick="validatePIN()" disabled>Təsdiq</button>
+        <div class="message" id="message"></div>
+    </div>
+
+    <script>
+        // Function to toggle password visibility
+        function togglePassword(id) {
+            const input = document.getElementById(id);
+            const icon = input.nextElementSibling.querySelector('i'); // Selects the <i> icon next to the input
+
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("eye-slash-icon-advanced");
+                icon.classList.add("eye-icon-advanced");
+            } else {
+                input.type = "password";
+                icon.classList.remove("eye-icon-advanced");
+                icon.classList.add("eye-slash-icon-advanced");
+            }
+        }
+
+        // Enable or disable the confirm button based on input fields
+        const pin1 = document.getElementById('pin1');
+        const pin2 = document.getElementById('pin2');
+        const confirmButton = document.getElementById('confirmButton');
+
+        pin1.addEventListener('input', checkInputs);
+        pin2.addEventListener('input', checkInputs);
+
+        function checkInputs() {
+            confirmButton.disabled = !pin1.value || !pin2.value;
+        }
+
+        // Function to validate if both PINs match
+        function validatePIN() {
+            const message = document.getElementById('message');
+            if (pin1.value === pin2.value) {
+                message.style.color = 'green';
+                message.textContent = 'PIN uğurla təyin edildi.'; // "PIN set successfully."
+            } else {
+                message.style.color = 'red';
+                message.textContent = 'PIN kodları uyğun deyil.'; // "PIN codes do not match."
+            }
+        }
+    </script>
+</body>
+
+</html>

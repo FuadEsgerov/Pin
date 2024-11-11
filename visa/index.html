@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credit Card Display</title>
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Center the card */
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Card Style */
+        .card {
+            width: 287px;
+            height: 182px;
+            background: url('./assets/card.png') no-repeat;
+            border-radius: 15px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            position: relative;
+            font-size: 12px;
+        }
+
+        /* Card overlay */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            pointer-events: none;
+        }
+
+        /* Card number */
+        .card-number-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        .card-number {
+            font-size: 16px;
+            letter-spacing: 3px;
+            display: flex;
+            align-items: center;
+            font-size: 17px;
+            font-weight: 700;
+            line-height: 16px;
+            letter-spacing: 4px;
+            box-shadow: 0.22px 0.44px 0.44px 0px #00000040;
+
+        }
+
+        /* Copy icon */
+        .copy-icon {
+            margin-left: 10px;
+            cursor: pointer;
+            font-size: 0.8em;
+        }
+
+        /* Expiry and CVV */
+        .card-details-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            position: absolute;
+            bottom: 20px;
+        }
+
+        .card-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9em;
+            width: 100%;
+            padding: 0 30px 0 18px;
+        }
+
+        /* CVV section */
+        .cvv-container {
+            display: flex;
+            align-items: center;
+            background: linear-gradient(112.27deg, rgba(255, 255, 255, 0.21) -6.45%, rgba(255, 255, 255, 0.51) 111.69%);
+            width: 55px;
+            height: 18px;
+            border-radius: 5px;
+            justify-content: center;
+            margin-left: 28px;
+        }
+
+        .eye-icon {
+            cursor: pointer;
+            margin-left: 5px;
+        }
+
+        /* Card type (e.g., Visa logo) */
+        .card-type {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        /* Close button */
+        .close-btn {
+            position: absolute;
+            top: -60px;
+            right: -20px;
+            font-size: 1.2em;
+            cursor: pointer;
+        }
+
+        .close-btn:hover {
+            color: #fff;
+        }
+
+        /* Custom icons */
+        .eye-icon-advanced,
+        .copy-icon-advanced,
+        .eye-slash-icon-advanced  {
+            display: inline-block;
+            background-size: cover;
+        }
+
+        .eye-icon-advanced {
+            width: 15px;
+            height: 9px;
+            background: url('./assets/icons/icon_shape.svg') no-repeat;
+        }
+
+        .eye-slash-icon-advanced {
+            width: 16px;
+            height: 12px;
+            background: url('./assets/icons/icon_slash_shape.svg') no-repeat;
+        }
+
+        .copy-icon-advanced {
+            width: 10px;
+            height: 12px;
+            background: url('./assets/icons/icon_copy.svg') no-repeat;
+        }
+
+        .card-data {
+            display: flex;
+            align-items: center;
+        }
+
+        #snackbar {
+            visibility: hidden;
+            min-width: 250px;
+            margin-left: -125px;
+            background-color: #3CBF80;
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            padding: 8px;
+            position: fixed;
+            z-index: 1;
+            left: 50%;
+            bottom: 30px;
+            font-size: 17px;
+        }
+
+        #snackbar.show {
+            visibility: visible;
+            -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+
+        @-webkit-keyframes fadein {
+            from {
+                bottom: 0;
+                opacity: 0;
+            }
+
+            to {
+                bottom: 30px;
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadein {
+            from {
+                bottom: 0;
+                opacity: 0;
+            }
+
+            to {
+                bottom: 30px;
+                opacity: 1;
+            }
+        }
+
+        @-webkit-keyframes fadeout {
+            from {
+                bottom: 30px;
+                opacity: 1;
+            }
+
+            to {
+                bottom: 0;
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeout {
+            from {
+                bottom: 30px;
+                opacity: 1;
+            }
+
+            to {
+                bottom: 0;
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card">
+        <div class="close-btn" onclick="closeCard()"><img src="./assets/icons/close.svg" alt="close"></div>
+        <div class="card-number-container">
+            <span class="card-number" id="cardNumber">4704 1111 2222 1233</span>
+            <span class="copy-icon" onclick="copyToClipboard('cardNumber')"><i class="copy-icon-advanced"></i></span>
+        </div>
+        <div class="card-details-container">
+            <div class="card-details">
+                <div class="card-data">
+                    <div class="expiry">
+                        <span id="cardDate">09/24</span>
+                        <span class="copy-icon" onclick="copyToClipboard('cardDate')"><i
+                                class="copy-icon-advanced"></i></span>
+                    </div>
+                    <div class="cvv-container">
+                        <span id="cardCVV">***</span>
+                        <span class="eye-icon" onclick="toggleCVVVisibility()"><i class="eye-slash-icon-advanced"></i></span>
+                    </div>
+                </div>
+
+                <div class="card-type" id="cardType">VISA</div>
+            </div>
+        </div>
+    </div>
+    <div id="snackbar">Kopyalandı</div>
+    <script>
+        const cardData = {
+            number: "4704 1111 2222 1233",
+            expiry: "09/24",
+            cvv: "123",
+            type: "VISA"
+        };
+
+        let cvvVisible = false;
+
+        function displayCardData(data) {
+            document.getElementById('cardNumber').innerText = data.number;
+            document.getElementById('cardDate').innerText = data.expiry;
+            document.getElementById('cardCVV').innerText = "CVV";
+            document.getElementById('cardType').innerText = data.type;
+        }
+
+        function toggleCVVVisibility() {
+            const iconElement = document.querySelector('.cvv-container .eye-icon i')
+            console.log(iconElement)
+            console.log(cvvVisible)
+            if(cvvVisible){
+                iconElement.classList.remove("eye-icon-advanced");
+            iconElement.classList.add("eye-slash-icon-advanced");
+            }
+            else{
+                iconElement.classList.remove("eye-slash-icon-advanced");
+            iconElement.classList.add("eye-icon-advanced");
+            }
+            const cvvElement = document.getElementById('cardCVV');
+  
+            cvvElement.innerText = cvvVisible ? "CVV" : cardData.cvv;
+
+            cvvVisible = !cvvVisible;
+    
+        }
+
+        function copyToClipboard(elementId) {
+            myFunction();
+            const text = document.getElementById(elementId).innerText;
+        }
+
+        function closeCard() {
+            document.querySelector('.card').style.display = 'none';
+        }
+
+        window.onload = () => {
+            displayCardData(cardData);
+        };
+        function myFunction() {
+            var x = document.getElementById("snackbar");
+            x.className = "show";
+            setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+        }
+    </script>
+
+</body>
+
+</html>
